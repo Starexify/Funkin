@@ -129,6 +129,11 @@
       "url": "https://github.com/FunkinCrew/hxdiscord_rpc"
     },
     {
+      "name": "hxdiscord_gamesdk",
+      "type": "haxelib",
+      "version": "0.1.0"
+    },
+    {
       "name": "hxjsonast",
       "type": "git",
       "dir": null,

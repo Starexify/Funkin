@@ -125,8 +125,8 @@ class DiscordClient
     presence.smallImageKey = cast(params.smallImageKey, Null<String>) ?? "";
 
     // NOTE: In previous versions, this showed as "Elapsed", but now shows as playtime and doesn't look good
-    // presence.startTimestamp = time - 10;
-    // presence.endTimestamp = time + 30;
+    presence.startTimestamp = 10;
+    presence.endTimestamp = 30;
 
     final button1:DiscordButton = DiscordButton.create();
     button1.label = "Play on Web";
