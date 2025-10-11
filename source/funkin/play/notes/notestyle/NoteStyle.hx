@@ -999,7 +999,7 @@ class NoteStyle implements IRegistryEntry<NoteStyleData>
 
     target.antialiasing = !(_data.assets.holdNoteCover?.isPixel ?? false);
     target.glow.antialiasing = !(_data.assets.holdNoteCover?.isPixel ?? false);
-    target.scale.set(_data.assets.holdNoteCover?.scale ?? 1.0, _data.assets.holdNoteCover?.scale ?? 1.0);
+    target.scale.set(getHoldCoverScale(), getHoldCoverScale());
     target.updateHitbox();
     target.glow.updateHitbox();
 
@@ -1155,6 +1155,11 @@ class NoteStyle implements IRegistryEntry<NoteStyleData>
   public function getHoldCoverOffsets():Array<Float>
   {
     return _data?.assets?.holdNoteCover?.offsets ?? fallback?.getHoldCoverOffsets() ?? [0.0, 0.0];
+  }
+
+  public function getHoldCoverScale():Float
+  {
+    return _data?.assets?.holdNoteCover?.scale ?? fallback?.getHoldCoverScale() ?? 1.0;
   }
 
   public function destroy():Void {}

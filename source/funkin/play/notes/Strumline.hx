@@ -1302,17 +1302,12 @@ class Strumline extends FlxSpriteGroup
     #if mobile
     if (inArrowContorlSchemeMode && isPlayer) pos = 35 * (FlxG.width / FlxG.height) / (FlxG.initialWidth / FlxG.initialHeight);
     #end
-    return switch (direction)
-    {
-      case NoteDirection.LEFT: -pos * 2;
-      case NoteDirection.DOWN:
-        -(pos * 2) + (1 * Strumline.NOTE_SPACING) * (noteSpacingScale * strumlineScale.x);
-      case NoteDirection.UP:
-        pos + (2 * Strumline.NOTE_SPACING) * (noteSpacingScale * strumlineScale.x);
-      case NoteDirection.RIGHT:
-        pos + (3 * Strumline.NOTE_SPACING) * (noteSpacingScale * strumlineScale.x);
-      default: -pos * 2;
-    }
+
+    var spacing:Float = Strumline.NOTE_SPACING * noteSpacingScale * strumlineScale.x;
+    var halfLength:Int = Math.floor(Strumline.DIRECTIONS.length / 2);
+    var baseOffset:Float = ((direction : Int) < halfLength) ? -pos * 2 : pos;
+
+    return baseOffset + (direction * spacing);
   }
 
   /**
