@@ -1,14 +1,14 @@
 package funkin.play.notes.notestyle;
 
 import funkin.play.Countdown;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.graphics.frames.FlxFramesCollection;
 import funkin.data.animation.AnimationData;
 import funkin.data.IRegistryEntry;
 import funkin.graphics.FunkinSprite;
 import funkin.data.notestyle.NoteStyleData;
 import funkin.data.notestyle.NoteStyleRegistry;
 import funkin.util.assets.FlxAnimationUtil;
+import flixel.graphics.frames.FlxFramesCollection;
+import flixel.graphics.frames.FlxAtlasFrames;
 
 using funkin.data.animation.AnimationData.AnimationDataUtil;
 
@@ -323,16 +323,6 @@ class NoteStyle implements IRegistryEntry<NoteStyleData>
     return _data?.assets?.noteStrumline?.scale ?? fallback?.getStrumlineScale() ?? 1.0;
   }
 
-  public function isNoteSplashEnabled():Bool
-  {
-    return _data?.assets?.noteSplash?.data?.enabled ?? fallback?.isNoteSplashEnabled() ?? false;
-  }
-
-  public function isHoldNoteCoverEnabled():Bool
-  {
-    return _data?.assets?.holdNoteCover?.data?.enabled ?? fallback?.isHoldNoteCoverEnabled() ?? false;
-  }
-
   /**
    * Build a sprite for the given step of the countdown.
    * @param step
@@ -386,19 +376,13 @@ class NoteStyle implements IRegistryEntry<NoteStyleData>
 
   public function buildCountdownSpritePath(step:Countdown.CountdownStep):Null<String>
   {
-    var basePath:Null<String> = null;
-    switch (step)
+    var basePath:Null<String> = switch (step)
     {
-      case THREE:
-        basePath = _data.assets.countdownThree?.assetPath;
-      case TWO:
-        basePath = _data.assets.countdownTwo?.assetPath;
-      case ONE:
-        basePath = _data.assets.countdownOne?.assetPath;
-      case GO:
-        basePath = _data.assets.countdownGo?.assetPath;
-      default:
-        basePath = null;
+      case THREE: _data.assets.countdownThree?.assetPath;
+      case TWO: _data.assets.countdownTwo?.assetPath;
+      case ONE: _data.assets.countdownOne?.assetPath;
+      case GO: _data.assets.countdownGo?.assetPath;
+      default: null;
     }
 
     if (basePath == null) return fallback?.buildCountdownSpritePath(step);
@@ -412,19 +396,13 @@ class NoteStyle implements IRegistryEntry<NoteStyleData>
 
   function buildCountdownSpriteLibrary(step:Countdown.CountdownStep):Null<String>
   {
-    var basePath:Null<String> = null;
-    switch (step)
+    var basePath:Null<String> = switch (step)
     {
-      case THREE:
-        basePath = _data.assets.countdownThree?.assetPath;
-      case TWO:
-        basePath = _data.assets.countdownTwo?.assetPath;
-      case ONE:
-        basePath = _data.assets.countdownOne?.assetPath;
-      case GO:
-        basePath = _data.assets.countdownGo?.assetPath;
-      default:
-        basePath = null;
+      case THREE: _data.assets.countdownThree?.assetPath;
+      case TWO: _data.assets.countdownTwo?.assetPath;
+      case ONE: _data.assets.countdownOne?.assetPath;
+      case GO: _data.assets.countdownGo?.assetPath;
+      default: null;
     }
 
     if (basePath == null) return fallback?.buildCountdownSpriteLibrary(step);
@@ -589,21 +567,15 @@ class NoteStyle implements IRegistryEntry<NoteStyleData>
 
   public function buildJudgementSpritePath(rating:String):Null<String>
   {
-    var basePath:Null<String> = null;
-
-    switch (rating)
+    var basePath:Null<String> = switch (rating)
     {
-      case "sick":
-        basePath = _data.assets.judgementSick?.assetPath;
-      case "good":
-        basePath = _data.assets.judgementGood?.assetPath;
-      case "bad":
-        basePath = _data.assets.judgementBad?.assetPath;
-      case "shit":
-        basePath = _data.assets.judgementShit?.assetPath;
-      default:
-        basePath = null;
+      case "sick": _data.assets.judgementSick?.assetPath;
+      case "good": _data.assets.judgementGood?.assetPath;
+      case "bad": _data.assets.judgementBad?.assetPath;
+      case "shit": _data.assets.judgementShit?.assetPath;
+      default: null;
     }
+
     if (basePath == null) return fallback?.buildJudgementSpritePath(rating);
     var parts = basePath?.split(Constants.LIBRARY_SEPARATOR) ?? [];
 
@@ -777,31 +749,19 @@ class NoteStyle implements IRegistryEntry<NoteStyleData>
 
   public function buildComboNumSpritePath(digit:Int):Null<String>
   {
-    var basePath:Null<String> = null;
-    switch (digit)
+    var basePath:Null<String> = switch (digit)
     {
-      case 0:
-        basePath = _data.assets.comboNumber0?.assetPath;
-      case 1:
-        basePath = _data.assets.comboNumber1?.assetPath;
-      case 2:
-        basePath = _data.assets.comboNumber2?.assetPath;
-      case 3:
-        basePath = _data.assets.comboNumber3?.assetPath;
-      case 4:
-        basePath = _data.assets.comboNumber4?.assetPath;
-      case 5:
-        basePath = _data.assets.comboNumber5?.assetPath;
-      case 6:
-        basePath = _data.assets.comboNumber6?.assetPath;
-      case 7:
-        basePath = _data.assets.comboNumber7?.assetPath;
-      case 8:
-        basePath = _data.assets.comboNumber8?.assetPath;
-      case 9:
-        basePath = _data.assets.comboNumber9?.assetPath;
-      default:
-        basePath = null;
+      case 0: _data.assets.comboNumber0?.assetPath;
+      case 1: _data.assets.comboNumber1?.assetPath;
+      case 2: _data.assets.comboNumber2?.assetPath;
+      case 3: _data.assets.comboNumber3?.assetPath;
+      case 4: _data.assets.comboNumber4?.assetPath;
+      case 5: _data.assets.comboNumber5?.assetPath;
+      case 6: _data.assets.comboNumber6?.assetPath;
+      case 7: _data.assets.comboNumber7?.assetPath;
+      case 8: _data.assets.comboNumber8?.assetPath;
+      case 9: _data.assets.comboNumber9?.assetPath;
+      default: null;
     }
 
     if (basePath == null) return fallback?.buildComboNumSpritePath(digit);
@@ -921,8 +881,7 @@ class NoteStyle implements IRegistryEntry<NoteStyleData>
   {
     if (raw)
     {
-      var rawPath:Null<String> = _data?.assets?.noteSplash?.assetPath;
-      if (rawPath == null) return fallback?.getSplashAssetPath(true);
+      var rawPath:Null<String> = _data?.assets?.noteSplash?.assetPath ?? fallback?.getSplashAssetPath(true);
       return rawPath;
     }
 
@@ -986,6 +945,11 @@ class NoteStyle implements IRegistryEntry<NoteStyleData>
     return _data?.assets?.noteSplash?.data?.framerateVariance ?? fallback?.getSplashFramerateVariance() ?? 2;
   }
 
+  public function isNoteSplashEnabled():Bool
+  {
+    return _data?.assets?.noteSplash?.data?.enabled ?? fallback?.isNoteSplashEnabled() ?? false;
+  }
+
   public function buildHoldCoverSprite(target:NoteHoldCover):Void
   {
     // NoteHoldCover has "glow" and "sparks". Right now it only implements "glow"
@@ -997,9 +961,9 @@ class NoteStyle implements IRegistryEntry<NoteStyleData>
     }
     target.glow.frames = glowAtlas;
 
-    target.antialiasing = !(_data.assets.holdNoteCover?.isPixel ?? false);
-    target.glow.antialiasing = !(_data.assets.holdNoteCover?.isPixel ?? false);
-    target.scale.set(_data.assets.holdNoteCover?.scale ?? 1.0, _data.assets.holdNoteCover?.scale ?? 1.0);
+    target.antialiasing = !(isHoldCoverPixel());
+    target.glow.antialiasing = !(isHoldCoverPixel());
+    target.scale.set(getHoldCoverScale(), getHoldCoverScale());
     target.updateHitbox();
     target.glow.updateHitbox();
 
@@ -1152,9 +1116,24 @@ class NoteStyle implements IRegistryEntry<NoteStyleData>
     return parts[1];
   }
 
+  public function getHoldCoverScale():Float
+  {
+    return _data?.assets?.holdNoteCover?.scale ?? fallback?.getHoldCoverScale() ?? 1.0;
+  }
+
   public function getHoldCoverOffsets():Array<Float>
   {
     return _data?.assets?.holdNoteCover?.offsets ?? fallback?.getHoldCoverOffsets() ?? [0.0, 0.0];
+  }
+
+  public function isHoldCoverPixel():Bool
+  {
+    return _data?.assets?.holdNoteCover?.isPixel ?? fallback?.isHoldCoverPixel() ?? false;
+  }
+
+  public function isHoldNoteCoverEnabled():Bool
+  {
+    return _data?.assets?.holdNoteCover?.data?.enabled ?? fallback?.isHoldNoteCoverEnabled() ?? false;
   }
 
   public function destroy():Void {}
