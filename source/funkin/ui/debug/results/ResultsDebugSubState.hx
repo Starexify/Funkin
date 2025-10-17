@@ -70,7 +70,7 @@ class ResultsDebugSubState extends MusicBeatSubState
   {
     var txt:FlxText = new FlxText(0, 0, name);
     txt.antialiasing = false;
-    txt.setFormat(Paths.font('vcr.ttf'), 32);
+    txt.setFormat(Paths.font('VCR OSD Neue.ttf'), 32);
 
     var menuItem:MenuTypedItem<FlxText> = new MenuTypedItem<FlxText>(10, 36 * items.length, txt, name, onChange);
     menuItem.setEmptyBackground();

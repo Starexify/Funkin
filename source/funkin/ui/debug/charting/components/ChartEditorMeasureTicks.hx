@@ -38,7 +38,7 @@ class ChartEditorMeasureTicks extends FlxTypedSpriteGroup<FlxSprite>
     for (i in 0...5)
     {
       var measureNumber = new FlxText(0, 0, ChartEditorState.GRID_SIZE, "1");
-      measureNumber.setFormat(Paths.font('vcr.ttf'), 20, FlxColor.WHITE);
+      measureNumber.setFormat(Paths.font('VCR OSD Neue.ttf'), 20, FlxColor.WHITE);
       measureNumber.borderStyle = FlxTextBorderStyle.OUTLINE;
       measureNumber.borderColor = FlxColor.BLACK;
       add(measureNumber);

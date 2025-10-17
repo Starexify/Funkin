@@ -125,7 +125,7 @@ class OffsetMenu extends Page<OptionsState.OptionsMenuPageName>
     add(arrow);
 
     /*var debugText = new FlxText(0, 0);
-      debugText.setFormat(Paths.font('vcr.ttf'), 16, FlxColor.WHITE, FlxTextAlign.CENTER);
+      debugText.setFormat(Paths.font('VCR OSD Neue.ttf'), 16, FlxColor.WHITE, FlxTextAlign.CENTER);
       debugText.text = 'Beat: ' + beat;
       debugText.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
           add(debugText); */
@@ -218,7 +218,7 @@ class OffsetMenu extends Page<OptionsState.OptionsMenuPageName>
     add(blackRect);
 
     /*debugBeatText = new FlxText(0, 0);
-      debugBeatText.setFormat(Paths.font('vcr.ttf'), 16, FlxColor.WHITE, FlxTextAlign.LEFT);
+      debugBeatText.setFormat(Paths.font('VCR OSD Neue.ttf'), 16, FlxColor.WHITE, FlxTextAlign.LEFT);
       debugBeatText.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
       debugBeatText.setPosition(10, 10);
       debugBeatText.scrollFactor.set(0, 0);
@@ -256,7 +256,7 @@ class OffsetMenu extends Page<OptionsState.OptionsMenuPageName>
     receptor.updateHitbox();
 
     jumpInText = new FlxText(0, 0);
-    jumpInText.setFormat(Paths.font('vcr.ttf'), 32, FlxColor.WHITE, FlxTextAlign.CENTER);
+    jumpInText.setFormat(Paths.font('VCR OSD Neue.ttf'), 32, FlxColor.WHITE, FlxTextAlign.CENTER);
     jumpInText.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 4);
     add(jumpInText);
 
@@ -266,7 +266,7 @@ class OffsetMenu extends Page<OptionsState.OptionsMenuPageName>
     // below receptor
 
     countText = new FlxText(0, 0);
-    countText.setFormat(Paths.font('vcr.ttf'), 32, FlxColor.WHITE, FlxTextAlign.CENTER);
+    countText.setFormat(Paths.font('VCR OSD Neue.ttf'), 32, FlxColor.WHITE, FlxTextAlign.CENTER);
     countText.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 4);
     add(countText);
 

@@ -52,6 +52,8 @@ class FunkinDebugDisplay extends Sprite
 
   var infoDisplay:TextField;
 
+  var font:TextFormat;
+
   public function new(x:Float = 10, y:Float = 10, color:Int = 0x000000):Void
   {
     super();
@@ -70,6 +72,7 @@ class FunkinDebugDisplay extends Sprite
     this.color = color;
     this.backgroundOpacity = 0;
     this.isAdvanced = false;
+    this.font = new TextFormat(Assets.getPath(Paths.font("VCR OSD Neue.ttf")));
   }
 
   function buildDebugDisplay(advanced:Bool):Void
@@ -116,11 +119,13 @@ class FunkinDebugDisplay extends Sprite
     fpsGraph = new FunkinStatsGraph(OTHERS_OFFSET, OTHERS_OFFSET + 49, graphsWidth, graphsHeight, color);
     fpsGraph.textDisplay.y = -49;
     fpsGraph.minValue = 0;
+    fpsGraph.textDisplay.defaultTextFormat = font;
     addChild(fpsGraph);
 
     #if !html5
     gcMemGraph = new FunkinStatsGraph(OTHERS_OFFSET, Math.floor(OTHERS_OFFSET + (fpsGraph.y + fpsGraph.axisHeight) + 22), graphsWidth, graphsHeight, color);
     gcMemGraph.minValue = 0;
+    gcMemGraph.textDisplay.defaultTextFormat = font;
     addChild(gcMemGraph);
 
     if (MemoryUtil.supportsTaskMem())
@@ -128,6 +133,7 @@ class FunkinDebugDisplay extends Sprite
       taskMemGraph = new FunkinStatsGraph(OTHERS_OFFSET, Math.floor(OTHERS_OFFSET + (gcMemGraph.y + gcMemGraph.axisHeight) + 22), graphsWidth, graphsHeight,
         color);
       taskMemGraph.minValue = 0;
+      taskMemGraph.textDisplay.defaultTextFormat = font;
       addChild(taskMemGraph);
     }
     #end
@@ -141,7 +147,7 @@ class FunkinDebugDisplay extends Sprite
     infoDisplay.width = 500;
     infoDisplay.selectable = false;
     infoDisplay.mouseEnabled = false;
-    infoDisplay.defaultTextFormat = new TextFormat('Monsterrat', 12, color, JUSTIFY);
+    infoDisplay.defaultTextFormat = new TextFormat('VCR OSD Neue.ttf', 12, color, JUSTIFY);
     infoDisplay.antiAliasType = NORMAL;
     infoDisplay.sharpness = 100;
     infoDisplay.multiline = true;

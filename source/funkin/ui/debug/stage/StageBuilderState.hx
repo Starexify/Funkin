@@ -83,7 +83,7 @@ class StageBuilderState extends MusicBeatState
     add(hudGrp);
 
     textInfo = new FlxText(10, 80, 0, "", 24);
-    textInfo.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    textInfo.setFormat(Paths.font("VCR OSD Neue.ttf"), 20, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
     textInfo.scrollFactor.set();
     hudGrp.add(textInfo);
 
