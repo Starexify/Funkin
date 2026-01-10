@@ -604,7 +604,20 @@ class Song implements IPlayStateScriptedClass implements IRegistryEntry<SongMeta
     var targetDifficulty:Null<SongDifficulty> = getDifficulty(difficultyId, variationId);
     if (targetDifficulty == null) return '';
 
-    return targetDifficulty?.characters?.instrumental ?? '';
+    var charInst:String = targetDifficulty?.characters?.instrumental ?? '';
+    var suffix:String = (variationId != null && variationId != '' && variationId != 'default') ? '-$variationId' : '';
+    if (charInst == '') return suffix;
+
+    if (Assets.exists(Paths.inst(this.id, '-$charInst$suffix')))
+    {
+      return '$charInst$suffix';
+    }
+
+    if (Assets.exists(Paths.inst(this.id, '-$charInst')))
+    {
+      return charInst;
+    }
+      return suffix != '' ? variationId : '';
   }
 
   /**
@@ -777,24 +790,39 @@ class SongDifficulty
 
   public function getInstPath(instrumental = ''):String
   {
+    var suffix:String = (variation != null && variation != '' && variation != 'default') ? '-$variation' : '';
+    var instId:String = '';
+
     if (characters != null)
     {
       if (instrumental != '' && characters.altInstrumentals.contains(instrumental))
       {
-        var instId = '-$instrumental';
-        return Paths.inst(this.song.id, instId);
+        instId = '-$instrumental';
       }
       else
       {
         // Fallback to default instrumental.
-        var instId = (characters.instrumental ?? '') != '' ? '-${characters.instrumental}' : '';
-        return Paths.inst(this.song.id, instId);
+        instId = (characters.instrumental ?? '') != '' ? '-${characters.instrumental}' : '';
       }
     }
-    else
+
+    // Automatically resolve the instrumental path by trying different suffix orders.
+    // For example, if `Inst-instId-erect.ogg` does not exist, check for `Voices-erect.ogg`.
+    // Then, check for  `Inst-instId.ogg`, then `Inst.ogg`.
+    var idsToTry:Array<String> = [
+        instId + suffix, // 1. Full: "-instId-variation"
+        suffix,          // 2. Variation: "-variation"
+        instId,          // 3. ID: "-instId"
+        ''               // 4. Base: ""
+    ];
+
+    for (checkId in idsToTry)
     {
-      return Paths.inst(this.song.id);
+      var path:String = Paths.inst(this.song.id, checkId);
+      if (path != null && Assets.exists(path)) return path;
     }
+
+    return Paths.inst(this.song.id);
   }
 
   public function cacheInst(instrumental = ''):Void
