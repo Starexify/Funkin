@@ -111,7 +111,7 @@ class Level implements IRegistryEntry<LevelData>
    */
   public function buildBackground():FlxSprite
   {
-    if (!_data.background.startsWith('#'))
+    if (!isBackgroundSimple())
     {
       // Image specified
       return new FlxSprite().loadGraphic(Paths.image(_data.background));
