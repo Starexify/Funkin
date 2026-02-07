@@ -409,7 +409,7 @@ class CharSelectSubState extends MusicBeatSubState
     FlxTween.tween(camFollow, {y: camFollow.y + 150}, 1.5,
       {
         ease: FlxEase.expoOut,
-        onComplete: function(_) {
+        onComplete: (_) -> {
           autoFollow = true;
           FlxG.camera.follow(camFollow, LOCKON, 0.01);
         }
@@ -467,7 +467,7 @@ class CharSelectSubState extends MusicBeatSubState
           startingVolume: 1,
           overrideExisting: true,
           restartTrack: true,
-          onLoad: function() {
+          onLoad: () -> {
             allowInput = true;
 
             @:privateAccess
@@ -560,7 +560,7 @@ class CharSelectSubState extends MusicBeatSubState
 
     nonLocks.shift();
 
-    selectTimer.start(0.5, function(_) {
+    selectTimer.start(0.5, (_) -> {
       var lock:Lock = cast grpIcons.group.members[index];
 
       lock.anim.play("unlock");
@@ -574,7 +574,7 @@ class CharSelectSubState extends MusicBeatSubState
       unlockSound.volume = 0.7;
       unlockSound.play(true);
 
-      lock.anim.onFinish.addOnce(function(_) {
+      lock.anim.onFinish.addOnce((_) -> {
         var char:String = availableChars.get(index) ?? Constants.DEFAULT_CHARACTER;
         camera.flash(0xFFFFFFFF, 0.1);
         playerChill.anim.play("unlock");
@@ -622,7 +622,7 @@ class CharSelectSubState extends MusicBeatSubState
               startingVolume: 1,
               overrideExisting: true,
               restartTrack: true,
-              onLoad: function() {
+              onLoad: () -> {
                 allowInput = true;
 
                 @:privateAccess
@@ -712,7 +712,7 @@ class CharSelectSubState extends MusicBeatSubState
     FlxTween.tween(camFollow, {y: camFollow.y - 150}, 0.8,
       {
         ease: FlxEase.backIn,
-        onComplete: function(_) {
+        onComplete: (_) -> {
           FlxG.switchState(() -> FreeplayState.build(
             {
               {

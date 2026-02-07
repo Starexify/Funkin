@@ -51,7 +51,7 @@ class Leaderboards
       var leaderboardData:Null<LeaderboardData> = listLeaderboardData().get(leaderboard.getId());
       if (leaderboardData != null)
       {
-        leaderboardData.postScore(score, function(outcome:Outcome<CallError>):Void {
+        leaderboardData.postScore(score, (outcome:Outcome<CallError>) -> {
           switch (outcome)
           {
             case SUCCESS:

@@ -76,7 +76,7 @@ class NewgroundsMedalPlugin extends FlxTypedContainer<FlxBasic> implements Conso
     medal.scrollFactor.set();
     medal.visible = false;
 
-    medal.anim.onFrameLabel.add(function(label:String) {
+    medal.anim.onFrameLabel.add((label:String) -> {
       switch (label)
       {
         case "show":
@@ -100,7 +100,7 @@ class NewgroundsMedalPlugin extends FlxTypedContainer<FlxBasic> implements Conso
       }
     });
 
-    medal.anim.onFinish.add(function(name:String) {
+    medal.anim.onFinish.add((name:String) -> {
       medal.visible = false;
     });
 
@@ -145,7 +145,7 @@ class NewgroundsMedalPlugin extends FlxTypedContainer<FlxBasic> implements Conso
 
     // instance is defined above so there's no need to worry about null safety here
     @:nullSafety(Off)
-    instance.medal.anim.onFinish.add(function(name:String) {
+    instance.medal.anim.onFinish.add((name:String) -> {
       if (instance.medalQueue.length > 0)
       {
         instance.medalQueue.shift()();
@@ -163,7 +163,7 @@ class NewgroundsMedalPlugin extends FlxTypedContainer<FlxBasic> implements Conso
   {
     if (instance == null) return;
 
-    var playMedal:Void->Void = function() {
+    var playMedal = () -> {
       instance.pointsLabel.visible = false;
       instance.nameLabel.visible = false;
       instance.pointsLabel.text = Std.string(points);

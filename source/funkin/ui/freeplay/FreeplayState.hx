@@ -274,7 +274,7 @@ class FreeplayState extends MusicBeatSubState
 
   public function new(?params:FreeplayStateParams, ?stickers:StickerSubState)
   {
-    var fetchPlayableCharacter = function():PlayableCharacter {
+    var fetchPlayableCharacter:()->PlayableCharacter = () -> {
       var targetCharId = params?.character ?? rememberedCharacterId;
       var result = PlayerRegistry.instance.fetchEntry(targetCharId);
       if (result == null)
@@ -621,7 +621,7 @@ class FreeplayState extends MusicBeatSubState
     fnfHighscoreSpr.updateHitbox();
     add(fnfHighscoreSpr);
 
-    new FlxTimer().start(FlxG.random.float(12, 50), function(tmr) {
+    new FlxTimer().start(FlxG.random.float(12, 50), (tmr) -> {
       fnfHighscoreSpr.animation.play('highscore');
       tmr.time = FlxG.random.float(20, 60);
     }, 0);
@@ -735,10 +735,10 @@ class FreeplayState extends MusicBeatSubState
         FlxTween.color(backingImage, 0.6, 0xFF000000, 0xFFFFFFFF,
           {
             ease: FlxEase.expoOut,
-            onUpdate: function(_) {
+            onUpdate: (_) -> {
               angleMaskShader.extraColor = backingImage.color;
             },
-            onComplete: function(_) {
+            onComplete: (_) -> {
               blackOverlayBullshitLOLXD.visible = false;
             }
           });
@@ -1281,7 +1281,7 @@ class FreeplayState extends MusicBeatSubState
 
             capsule.doLerp = false;
             capsule.setPosition(originalPos.x, originalPos.y);
-            IntervalShake.shake(capsule, 0.6, 1 / 24, 0.12, 0, FlxEase.quadOut, function(_) {
+            IntervalShake.shake(capsule, 0.6, 1 / 24, 0.12, 0, FlxEase.quadOut, (_) -> {
               capsule.doLerp = true;
               capsule.cameras = [funnyCam];
 
@@ -1309,7 +1309,7 @@ class FreeplayState extends MusicBeatSubState
               capsule.capsule.angle = FlxG.random.float(-10 + (distFromSelected * 2), 10 - (distFromSelected * 2));
               FlxTween.tween(capsule.capsule, {angle: 0}, 0.5, {ease: FlxEase.backOut});
 
-              IntervalShake.shake(capsule, 0.6, 1 / 24, 0.12 / (distFromSelected + 1), 0, FlxEase.quadOut, function(_) {
+              IntervalShake.shake(capsule, 0.6, 1 / 24, 0.12 / (distFromSelected + 1), 0, FlxEase.quadOut, (_) -> {
                 capsule.doLerp = true;
               });
             });
@@ -1324,7 +1324,7 @@ class FreeplayState extends MusicBeatSubState
               capsule.capsule.angle = FlxG.random.float(-10 + (distFromSelected * 2), 10 - (distFromSelected * 2));
               FlxTween.tween(capsule.capsule, {angle: 0}, 0.5, {ease: FlxEase.backOut});
 
-              IntervalShake.shake(capsule, 0.6, 1 / 24, 0.12 / (distFromSelected + 1), 0, FlxEase.quadOut, function(_) {
+              IntervalShake.shake(capsule, 0.6, 1 / 24, 0.12 / (distFromSelected + 1), 0, FlxEase.quadOut, (_) -> {
                 capsule.doLerp = true;
               });
             });
@@ -2343,7 +2343,7 @@ class FreeplayState extends MusicBeatSubState
       FlxTween.tween(diff, {x: newX + (CUTOUT_WIDTH * DJ_POS_MULTI)}, 0.2,
         {
           ease: FlxEase.circInOut,
-          onComplete: function(_) {
+          onComplete: (_) -> {
             uiStateMachine.transition(Idle);
             diff.x = 90 + (CUTOUT_WIDTH * DJ_POS_MULTI);
             diff.visible = false;
@@ -2446,7 +2446,7 @@ class FreeplayState extends MusicBeatSubState
       FlxTween.tween(diffSprite, {x: 90 + (CUTOUT_WIDTH * DJ_POS_MULTI)}, 0.2,
         {
           ease: FlxEase.circInOut,
-          onComplete: function(_) {
+          onComplete: (_) -> {
             #if FEATURE_TOUCH_CONTROLS
             FlxG.touches.flickManager.destroy();
             _flickEnded = true;
@@ -2746,13 +2746,13 @@ class FreeplayState extends MusicBeatSubState
     // Start vibration after half of second.
     if (HapticUtil.hapticsAvailable)
     {
-      new FlxTimer().start(0.5, function(tmr) {
+      new FlxTimer().start(0.5, (tmr) -> {
         switch (currentCharacterId)
         {
           // Toggles the bool that allows vibration on update.
           case "pico":
             allowPicoBulletsVibration = true;
-            new FlxTimer().start(0.5, function(tmr) {
+            new FlxTimer().start(0.5, (tmr) -> {
               allowPicoBulletsVibration = false;
             });
 
@@ -2996,11 +2996,11 @@ class FreeplayState extends MusicBeatSubState
 
             var fadeStart:Float = (FlxG.sound.music.length / 1000) - 2;
 
-            previewTimers.push(new FlxTimer().start(fadeStart, function(_) {
+            previewTimers.push(new FlxTimer().start(fadeStart, (_) -> {
               FlxG.sound.music.fadeOut(2, 0);
             }));
 
-            previewTimers.push(new FlxTimer().start(FlxG.sound.music.length / 1000, function(_) {
+            previewTimers.push(new FlxTimer().start(FlxG.sound.music.length / 1000, (_) -> {
               playCurSongPreview();
             }));
           },
@@ -3070,7 +3070,7 @@ class FreeplayState extends MusicBeatSubState
           {
             ease: FlxEase.expoIn,
             startDelay: 0.1,
-            onComplete: function(_) {
+            onComplete: (_) -> {
               selectedCapsule.doLerp = true;
               uiStateMachine.transition(Idle);
             }
@@ -3095,7 +3095,7 @@ class FreeplayState extends MusicBeatSubState
           {
             ease: FlxEase.expoIn,
             startDelay: 0.1,
-            onComplete: function(_) {
+            onComplete: (_) -> {
               selectedCapsule.doLerp = true;
               uiStateMachine.transition(Idle);
             }
@@ -3178,7 +3178,7 @@ class DifficultySelector extends FlxSprite
 
     this.shader = whiteShader;
 
-    new FlxTimer().start(2 / 24, function(tmr) {
+    new FlxTimer().start(2 / 24, (tmr) -> {
       scale.x = scale.y = 1;
       @:nullSafety(Off) this.shader = null;
       updateHitbox();

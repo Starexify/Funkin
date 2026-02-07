@@ -188,7 +188,7 @@ class GameOverSubState extends MusicBeatSubState
     HapticUtil.vibrate(0, Constants.DEFAULT_VIBRATION_DURATION);
 
     // Allow input a second later to prevent accidental gameover skips.
-    new FlxTimer().start(1, function(tmr:FlxTimer) {
+    new FlxTimer().start(1, (tmr:FlxTimer) -> {
       canInput = true;
     });
   }
@@ -339,7 +339,7 @@ class GameOverSubState extends MusicBeatSubState
     // Start music at lower volume
     startDeathMusic(0.2, false);
     boyfriend.playAnimation('deathLoop' + animationSuffix);
-    deathQuoteSound = FunkinSound.playOnce(deathQuote, function() {
+    deathQuoteSound = FunkinSound.playOnce(deathQuote, () -> {
       // Once the quote ends, fade in the game over music.
       if (!isEnding && gameOverMusic != null)
       {
@@ -378,10 +378,10 @@ class GameOverSubState extends MusicBeatSubState
       final FADE_TIMER:Float = (gameOverMusic?.length ?? 0) / 7000;
 
       // After the animation finishes...
-      new FlxTimer().start(FADE_TIMER, function(tmr:FlxTimer) {
+      new FlxTimer().start(FADE_TIMER, (tmr:FlxTimer) -> {
         // ...fade out the graphics. Then after that happens...
 
-        var resetPlaying = function(pixel:Bool = false) {
+        var resetPlaying = (?pixel:Bool = false) -> {
           // ...close the GameOverSubState.
           if (pixel) RetroCameraFade.fadeBlack(FlxG.camera, 10, 1);
           else
@@ -426,7 +426,7 @@ class GameOverSubState extends MusicBeatSubState
         }
         else
         {
-          FlxG.camera.fade(FlxColor.BLACK, 2, false, function() {
+          FlxG.camera.fade(FlxColor.BLACK, 2, false, () -> {
             #if FEATURE_MOBILE_ADVERTISEMENTS
             if (AdMobUtil.PLAYING_COUNTER >= AdMobUtil.MAX_BEFORE_AD)
             {
@@ -494,7 +494,7 @@ class GameOverSubState extends MusicBeatSubState
       }
       else
       {
-        onComplete = function() {
+        onComplete = () -> {
           isStarting = false;
           // We need to force to ensure that the non-starting music plays.
           startDeathMusic(1.0, true);

@@ -1127,7 +1127,7 @@ class PlayState extends MusicBeatSubState
       Conductor.instance.update(-vwooshDelay * 1000 + startTimestamp + Conductor.instance.beatLengthMs * -5);
 
       // timer for vwoosh
-      vwooshTimer.start(vwooshDelay, function(_) {
+      vwooshTimer.start(vwooshDelay, (_) -> {
         if (playerStrumline.notes.length == 0) playerStrumline.updateNotes();
         if (opponentStrumline.notes.length == 0) opponentStrumline.updateNotes();
         playerStrumline.vwooshInNotes();
@@ -1303,7 +1303,7 @@ class PlayState extends MusicBeatSubState
         var deathPreTransitionDelay = currentStage?.getBoyfriend()?.getDeathPreTransitionDelay() ?? 0.0;
         if (deathPreTransitionDelay > 0)
         {
-          new FlxTimer().start(deathPreTransitionDelay, function(_) {
+          new FlxTimer().start(deathPreTransitionDelay, (_) -> {
             moveToGameOver();
           });
         }
@@ -3800,13 +3800,13 @@ class PlayState extends MusicBeatSubState
 
     FlxTween.tween(camHUD, {alpha: 0}, 0.6,
       {
-        onComplete: function(_) {
+        onComplete: (_) -> {
           moveToResultsScreen(isNewHighscore, prevScoreData);
         }
       });
 
     // Zoom in on Girlfriend (or BF if no GF)
-    new FlxTimer().start(0.8, function(_) {
+    new FlxTimer().start(0.8, (_) -> {
       if (targetBF)
       {
         boyfriend?.animation.play('hey');
@@ -3945,7 +3945,7 @@ class PlayState extends MusicBeatSubState
       cameraFollowTween = FlxTween.tween(FlxG.camera.scroll, {x: followPos.x, y: followPos.y}, duration,
         {
           ease: ease,
-          onComplete: function(_) {
+          onComplete: (_) -> {
             resetCamera(false, false); // Re-enable camera following when the tween is complete.
           }
         });
