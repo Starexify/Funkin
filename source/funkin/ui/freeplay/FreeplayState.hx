@@ -77,6 +77,8 @@ import funkin.mobile.input.ControlsHandler;
 @:nullSafety
 class FreeplayState extends MusicBeatSubState
 {
+  static var LOG_TAG:String = ' FREEPLAY '.bold().bg_yellow();
+
   //
   // Params
   //
@@ -280,7 +282,7 @@ class FreeplayState extends MusicBeatSubState
       var result = PlayerRegistry.instance.fetchEntry(targetCharId);
       if (result == null)
       {
-        trace('No valid playable character with id ${targetCharId}');
+        fLog('No valid playable character with id ${targetCharId}');
         result = PlayerRegistry.instance.fetchEntry(Constants.DEFAULT_CHARACTER);
         if (result == null) throw 'WTH your default character is null?????';
       }
@@ -403,7 +405,7 @@ class FreeplayState extends MusicBeatSubState
 
       if (level == null)
       {
-        trace(' WARNING '.warning() + ' Could not find level with id (${levelId})');
+        fWarn('Could not find level with id (${levelId})', LOG_TAG);
         continue;
       }
 
@@ -413,7 +415,7 @@ class FreeplayState extends MusicBeatSubState
 
         if (song == null)
         {
-          trace(' WARNING '.warning() + ' Could not find song with id (${songId})');
+          fWarn('Could not find song with id (${songId})', LOG_TAG);
           continue;
         }
 
@@ -1455,11 +1457,11 @@ class FreeplayState extends MusicBeatSubState
 
     if (PlayerRegistry.instance.countUnlockedCharacters() > 1)
     {
-      trace('Opening character select!');
+      fLog('Opening character select!', LOG_TAG);
     }
     else
     {
-      trace('Not enough characters unlocked to open character select!');
+      fLog('Not enough characters unlocked to open character select!', LOG_TAG);
       FunkinSound.playOnce(Paths.sound('cancelMenu'));
       return;
     }
@@ -1844,13 +1846,13 @@ class FreeplayState extends MusicBeatSubState
           return cap.alive && cap.freeplayData != null;
         });
 
-        trace('Available songs: ${availableSongCapsules.map(function(cap) {
+        fLog('Available songs: ${availableSongCapsules.map(function(cap) {
             return cap?.freeplayData?.data.songName;
-          })}');
+          })}', LOG_TAG);
 
         if (availableSongCapsules.length == 0)
         {
-          trace('No songs available!');
+          fLog('No songs available!', LOG_TAG);
           uiStateMachine.transition(Idle);
           FunkinSound.playOnce(Paths.sound('cancelMenu'));
           return;
@@ -1887,7 +1889,7 @@ class FreeplayState extends MusicBeatSubState
       var targetSongID = grpCapsules.members[curSelected]?.freeplayData?.data.id ?? 'unknown';
       if (targetSongID == 'unknown')
       {
-        trace('CHART RANDOM SONG');
+        fLog('CHART RANDOM SONG', LOG_TAG);
 
         var availableSongCapsules:Array<SongMenuItem> = grpCapsules.members.filter(function(cap:SongMenuItem)
         {
@@ -1895,13 +1897,13 @@ class FreeplayState extends MusicBeatSubState
           return cap.alive && cap.freeplayData != null;
         });
 
-        trace('Available songs: ${availableSongCapsules.map(function(cap) {
+        fLog('Available songs: ${availableSongCapsules.map(function(cap) {
             return cap?.freeplayData?.data.songName;
-          })}');
+          })}', LOG_TAG);
 
         if (availableSongCapsules.length == 0)
         {
-          trace('No songs available!');
+          fLog('No songs available!', LOG_TAG);
           uiStateMachine.transition(Idle);
           FunkinSound.playOnce(Paths.sound('cancelMenu'));
           return;
@@ -1926,7 +1928,7 @@ class FreeplayState extends MusicBeatSubState
       var targetDifficulty:Null<SongDifficulty> = targetSong.getDifficulty(currentDifficulty, currentVariation);
       if (targetDifficulty == null)
       {
-        FlxG.log.warn('WARN: could not find difficulty with id (${currentDifficulty})');
+        fWarn('Could not find difficulty with id (${currentDifficulty})', LOG_TAG);
         uiStateMachine.transition(Idle);
         return;
       }
@@ -2724,14 +2726,14 @@ class FreeplayState extends MusicBeatSubState
     var targetSong:Song = targetSongNullable;
     var targetLevelId:Null<String> = cap?.freeplayData?.levelId;
 
-    trace('target song: ${targetSongId} (${targetVariation})');
+    fLog('Selected target song: ${targetSongId} (${targetVariation})', LOG_TAG);
 
     PlayStatePlaylist.campaignId = targetLevelId ?? null;
 
     var targetDifficulty:Null<SongDifficulty> = targetSong.getDifficulty(currentDifficulty, currentVariation);
     if (targetDifficulty == null)
     {
-      FlxG.log.warn('WARN: could not find difficulty with id (${currentDifficulty})');
+      fWarn('Could not find difficulty with id (${currentDifficulty})', LOG_TAG);
       uiStateMachine.transition(Idle);
       return;
     }

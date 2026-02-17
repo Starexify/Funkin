@@ -24,6 +24,8 @@ enum UIState
 @:nullSafety
 class UIStateMachine
 {
+  static var LOG_TAG:String = ' UI '.bold().bg_orange();
+
   public var currentState(default, null):UIState = Idle;
   public var previousState(default, null):UIState = Idle;
 
@@ -49,20 +51,20 @@ class UIStateMachine
     // Allow same-state transitions (idempotent)
     if (currentState == newState)
     {
-      log('State transition ${currentState} -> ${newState} (no change)');
+      fLog('State transition ${currentState} -> ${newState} (no change)', LOG_TAG);
       return true;
     }
 
     if (!canTransition(currentState, newState))
     {
-      log('State transition: ${currentState} -> ${newState} (INVALID, blocked)');
+      fLog('State transition: ${currentState} -> ${newState} (INVALID, blocked)', LOG_TAG);
       return false;
     }
 
     previousState = currentState;
     currentState = newState;
 
-    log('State transition ${previousState} -> ${currentState}');
+    fLog('State transition ${previousState} -> ${currentState}', LOG_TAG);
 
     // Notify listeners
     for (callback in onStateChange)
@@ -93,10 +95,5 @@ class UIStateMachine
   {
     // Entering is an enabled state since we want to be able to interact even during the screen fade wipe thing
     return currentState == Idle || currentState == EnteringMainMenu;
-  }
-
-  static function log(message:String):Void
-  {
-    trace(' UI '.bold().bg_orange() + ' $message');
   }
 }

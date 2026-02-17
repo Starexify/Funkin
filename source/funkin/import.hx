@@ -10,6 +10,13 @@ import flixel.FlxG; // This one in particular causes a compile error if you're u
 import flixel.system.debug.watch.Tracker;
 import haxe.ds.Option;
 
+// Logger imports
+import funkin.FunkinLogger.log as fLog;
+import funkin.FunkinLogger.warn as fWarn;
+import funkin.FunkinLogger.info as fInfo;
+import funkin.FunkinLogger.error as fError;
+import funkin.FunkinLogger.fatal;
+
 // These are great.
 using Lambda;
 using StringTools;
