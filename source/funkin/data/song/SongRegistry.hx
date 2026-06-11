@@ -6,7 +6,6 @@ import funkin.data.song.migrator.SongData_v2_1_0.SongMetadata_v2_1_0;
 import funkin.data.song.SongData.SongChartData;
 import funkin.data.song.SongData.SongMetadata;
 import funkin.data.song.SongData.SongMusicData;
-import funkin.play.song.ScriptedSong;
 import funkin.play.song.Song;
 import funkin.util.assets.DataAssets;
 import funkin.util.VersionUtil;
@@ -32,8 +31,6 @@ class SongRegistry extends BaseRegistry<Song, SongMetadata, SongEntryParams> imp
   public static final SONG_MUSIC_DATA_VERSION_RULE:thx.semver.VersionRule = '2.0.x';
   public static var DEFAULT_GENERATEDBY(get, never):String;
 
-  public var scriptedSongVariations:Map<String, Song> = new Map<String, Song>();
-
   static function get_DEFAULT_GENERATEDBY():String
   {
     return '${Constants.TITLE} - ${Constants.VERSION}';
@@ -47,36 +44,6 @@ class SongRegistry extends BaseRegistry<Song, SongMetadata, SongEntryParams> imp
   override public function loadEntries():Void
   {
     clearEntries();
-
-    //
-    // SCRIPTED ENTRIES
-    //
-    var scriptedEntryClassNames:Array<String> = getScriptedClassNames();
-    log(' INFO '.info() + 'Parsing ${scriptedEntryClassNames.length} scripted entries...');
-
-    for (entryCls in scriptedEntryClassNames)
-    {
-      var entry:Song = createScriptedEntry(entryCls);
-
-      if (entry != null)
-      {
-        if (entry.variation != null)
-        {
-          scriptedSongVariations.set('${entry.id}:${entry.variation}', entry);
-          log('Successfully created scripted entry (${entryCls} = ${entry.id}, ${entry.variation})');
-        }
-        else
-        {
-          entries.set(entry.id, entry);
-          scriptedEntryIds.set(entry.id, entryCls);
-          log('Successfully created scripted entry (${entryCls} = ${entry.id})');
-        }
-      }
-      else
-      {
-        log('Failed to create scripted entry (${entryCls})');
-      }
-    }
 
     //
     // UNSCRIPTED ENTRIES
@@ -125,51 +92,6 @@ class SongRegistry extends BaseRegistry<Song, SongMetadata, SongEntryParams> imp
   public function parseEntryDataRaw(contents:String, ?fileName:String = 'raw'):Null<SongMetadata>
   {
     return parseEntryMetadataRaw(contents);
-  }
-
-  override public function isScriptedEntry(id:String, ?params:Null<SongEntryParams>)
-  {
-    var variation:String = params?.variation ?? Constants.DEFAULT_VARIATION;
-    if (variation != Constants.DEFAULT_VARIATION)
-    {
-      return scriptedSongVariations.exists('${id}:${variation}');
-    }
-    return super.isScriptedEntry(id, params);
-  }
-
-  override public function getScriptedEntryClassName(id:String, ?params:Null<SongEntryParams>):Null<String>
-  {
-    var variation:String = params?.variation ?? Constants.DEFAULT_VARIATION;
-    if (variation != Constants.DEFAULT_VARIATION)
-    {
-      final variationSongId:ScriptedSong = cast scriptedSongVariations.get('${id}:${variation}');
-      @:privateAccess
-      var path:String = variationSongId._asc.fullyQualifiedName;
-      return path;
-    }
-    return super.getScriptedEntryClassName(id, params);
-  }
-
-  /**
-   * We override `fetchEntry` to handle song variations!
-   */
-  override public function fetchEntry(id:String, ?params:SongEntryParams):Null<Song>
-  {
-    var variation:String = params?.variation ?? Constants.DEFAULT_VARIATION;
-
-    if (variation != Constants.DEFAULT_VARIATION)
-    {
-      if (scriptedSongVariations.exists('${id}:${variation}'))
-      {
-        var variationSongScript:Null<Song> = scriptedSongVariations.get('${id}:${variation}');
-        if (variationSongScript != null)
-        {
-          return variationSongScript;
-        }
-      }
-    }
-
-    return super.fetchEntry(id, params);
   }
 
   public function parseEntryMetadata(id:String, ?variation:String):Null<SongMetadata>

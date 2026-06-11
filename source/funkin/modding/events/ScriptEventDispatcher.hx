@@ -2,7 +2,6 @@ package funkin.modding.events;
 
 import funkin.modding.IScriptedClass.IPlayStateScriptedClass;
 import funkin.modding.IScriptedClass;
-import funkin.modding.module.Module;
 
 /**
  * Utility functions to assist with handling scripted classes.
@@ -34,11 +33,7 @@ class ScriptEventDispatcher
         target.onCreate(event);
         return;
       case STATE_CREATE:
-        if (Std.isOfType(target, Module))
-        {
-          var t:Module = cast(target, Module);
-          t.onStateCreate(event);
-        }
+
         return;
       case DESTROY:
         target.onDestroy(event);

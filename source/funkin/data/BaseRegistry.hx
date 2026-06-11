@@ -32,11 +32,6 @@ abstract class BaseRegistry<T:(IRegistryEntry<J> & Constructible<EntryConstructo
   final entries:Map<String, T>;
 
   /**
-   * A map of entry IDs to scripted class names.
-   */
-  final scriptedEntryIds:Map<String, String>;
-
-  /**
    * The version rule to use when loading entries.
    * If the entry's version does not match this rule, migration is needed.
    */
@@ -55,7 +50,6 @@ abstract class BaseRegistry<T:(IRegistryEntry<J> & Constructible<EntryConstructo
     this.versionRule = versionRule == null ? '1.0.x' : versionRule;
 
     this.entries = new Map<String, T>();
-    this.scriptedEntryIds = [];
 
     // Lazy initialization of singletons should let this get called,
     // but we have this check just in case.
@@ -71,37 +65,6 @@ abstract class BaseRegistry<T:(IRegistryEntry<J> & Constructible<EntryConstructo
   public function loadEntries():Void
   {
     clearEntries();
-
-    //
-    // SCRIPTED ENTRIES
-    //
-    var scriptedEntryClassNames:Array<String> = getScriptedClassNames();
-    log(' INFO '.info() + 'Parsing ${scriptedEntryClassNames.length} scripted entries...');
-
-    for (entryCls in scriptedEntryClassNames)
-    {
-      var entry:Null<T> = null;
-      try
-      {
-        entry = createScriptedEntry(entryCls);
-      }
-      catch (e)
-      {
-        log('Failed to create scripted entry (${entryCls})');
-        continue;
-      }
-
-      if (entry != null)
-      {
-        log('Successfully created scripted entry (${entryCls} = ${entry.id})');
-        entries.set(entry.id, entry);
-        scriptedEntryIds.set(entry.id, entryCls);
-      }
-      else
-      {
-        log('Failed to create scripted entry (${entryCls})');
-      }
-    }
 
     //
     // UNSCRIPTED ENTRIES
@@ -149,26 +112,6 @@ abstract class BaseRegistry<T:(IRegistryEntry<J> & Constructible<EntryConstructo
   public function countEntries():Int
   {
     return entries.size();
-  }
-
-  /**
-   * Return whether the entry ID is known to have an attached script.
-   * @param id The ID of the entry.
-   * @return `true` if the entry has an attached script, `false` otherwise.
-   */
-  public function isScriptedEntry(id:String, ?params:Null<P>):Bool
-  {
-    return scriptedEntryIds.exists(id);
-  }
-
-  /**
-   * Return the class name of the scripted entry with the given ID, if it exists.
-   * @param id The ID of the entry.
-   * @return The class name, or `null` if it does not exist.
-   */
-  public function getScriptedEntryClassName(id:String, ?params:Null<P>):Null<String>
-  {
-    return scriptedEntryIds.get(id);
   }
 
   /**
@@ -309,12 +252,6 @@ abstract class BaseRegistry<T:(IRegistryEntry<J> & Constructible<EntryConstructo
   }
 
   /**
-   * Retrieve the list of scripted class names to load.
-   * @return An array of scripted class names.
-   */
-  abstract function getScriptedClassNames():Array<String>;
-
-  /**
    * Create an entry from the given ID.
    * @param id
    */
@@ -323,12 +260,6 @@ abstract class BaseRegistry<T:(IRegistryEntry<J> & Constructible<EntryConstructo
     // We enforce that T is Constructible to ensure this is valid.
     return new T(id);
   }
-
-  /**
-   * Create a entry, attached to a scripted class, from the given class name.
-   * @param clsName
-   */
-  abstract function createScriptedEntry(clsName:String):Null<T>;
 
   function printErrors(errors:Array<json2object.Error>, id:String = ''):Void
   {

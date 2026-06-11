@@ -2,7 +2,6 @@ package funkin.data.stickers;
 
 import funkin.data.stickers.StickerData;
 import funkin.ui.transition.stickers.StickerPack;
-import funkin.ui.transition.stickers.ScriptedStickerPack;
 
 @:nullSafety
 class StickerRegistry extends BaseRegistry<StickerPack, StickerData, StickerEntryParams>
@@ -77,16 +76,6 @@ class StickerRegistry extends BaseRegistry<StickerPack, StickerData, StickerEntr
       return null;
     }
     return parser.value;
-  }
-
-  function createScriptedEntry(clsName:String):StickerPack
-  {
-    return ScriptedStickerPack.scriptInit(clsName, 'unknown');
-  }
-
-  function getScriptedClassNames():Array<String>
-  {
-    return ScriptedStickerPack.listScriptClasses();
   }
 }
 

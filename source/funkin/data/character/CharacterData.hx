@@ -3,12 +3,6 @@ package funkin.data.character;
 import funkin.data.animation.AnimationData;
 import funkin.modding.events.ScriptEvent;
 import funkin.modding.events.ScriptEventDispatcher;
-import funkin.play.character.ScriptedCharacter.ScriptedAnimateAtlasCharacter;
-import funkin.play.character.ScriptedCharacter.ScriptedBaseCharacter;
-import funkin.play.character.ScriptedCharacter.ScriptedMultiSparrowCharacter;
-import funkin.play.character.ScriptedCharacter.ScriptedMultiAnimateAtlasCharacter;
-import funkin.play.character.ScriptedCharacter.ScriptedPackerCharacter;
-import funkin.play.character.ScriptedCharacter.ScriptedSparrowCharacter;
 import funkin.play.character.AnimateAtlasCharacter;
 import funkin.play.character.BaseCharacter;
 import funkin.play.character.SparrowCharacter;
@@ -38,7 +32,6 @@ class CharacterDataParser
   public static final CHARACTER_DATA_VERSION_RULE:String = '1.0.x';
 
   static final characterCache:Map<String, CharacterData> = new Map<String, CharacterData>();
-  static final characterScriptedClass:Map<String, String> = new Map<String, String>();
   static final DEFAULT_CHAR_ID:String = 'UNKNOWN';
 
   /**
@@ -79,143 +72,6 @@ class CharacterDataParser
       }
     }
 
-    //
-    // SCRIPTED CHARACTERS
-    //
-
-    // Fuck I wish scripted classes supported static functions.
-
-    var scriptedCharClassNames1:Array<String> = ScriptedSparrowCharacter.listScriptClasses();
-    if (scriptedCharClassNames1.length > 0)
-    {
-      log('Instantiating ${scriptedCharClassNames1.length} (Sparrow) scripted characters...');
-      for (charCls in scriptedCharClassNames1)
-      {
-        try
-        {
-          var character:SparrowCharacter = ScriptedSparrowCharacter.scriptInit(charCls, DEFAULT_CHAR_ID);
-          log('Loaded character ${character.characterName} (scripted: $charCls)');
-          characterScriptedClass.set(character.characterId, charCls);
-        }
-        catch (e)
-        {
-          log(' ERROR '.error() + 'Failed to initialize scripted Sparrow character: $charCls');
-          log(' ERROR '.error() + '$e');
-        }
-      }
-    }
-
-    var scriptedCharClassNames2:Array<String> = ScriptedPackerCharacter.listScriptClasses();
-    if (scriptedCharClassNames2.length > 0)
-    {
-      log('Instantiating ${scriptedCharClassNames2.length} (Packer) scripted characters...');
-      for (charCls in scriptedCharClassNames2)
-      {
-        try
-        {
-          var character:PackerCharacter = ScriptedPackerCharacter.scriptInit(charCls, DEFAULT_CHAR_ID);
-          log('Loaded character ${character.characterName} (scripted: $charCls)');
-          characterScriptedClass.set(character.characterId, charCls);
-        }
-        catch (e)
-        {
-          log(' ERROR '.error() + 'Failed to initialize scripted Packer character: $charCls');
-          log(' ERROR '.error() + '$e');
-        }
-      }
-    }
-
-    var scriptedCharClassNames3:Array<String> = ScriptedMultiSparrowCharacter.listScriptClasses();
-    if (scriptedCharClassNames3.length > 0)
-    {
-      log('Instantiating ${scriptedCharClassNames3.length} (Multi-Sparrow) scripted characters...');
-      for (charCls in scriptedCharClassNames3)
-      {
-        try
-        {
-          var character:MultiSparrowCharacter = ScriptedMultiSparrowCharacter.scriptInit(charCls, DEFAULT_CHAR_ID);
-          log('Loaded character ${character.characterName} (scripted: $charCls)');
-          characterScriptedClass.set(character.characterId, charCls);
-        }
-        catch (e)
-        {
-          log(' ERROR '.error() + 'Failed to initialize scripted Multi-Sparrow character: $charCls');
-          log(' ERROR '.error() + '$e');
-        }
-      }
-    }
-
-    var scriptedCharClassNames4:Array<String> = ScriptedAnimateAtlasCharacter.listScriptClasses();
-    if (scriptedCharClassNames4.length > 0)
-    {
-      log('Instantiating ${scriptedCharClassNames4.length} (Animate Atlas) scripted characters...');
-      for (charCls in scriptedCharClassNames4)
-      {
-        try
-        {
-          var character:AnimateAtlasCharacter = ScriptedAnimateAtlasCharacter.scriptInit(charCls, DEFAULT_CHAR_ID);
-          log('Loaded character ${character.characterName} (scripted: $charCls)');
-          characterScriptedClass.set(character.characterId, charCls);
-        }
-        catch (e)
-        {
-          log(' ERROR '.error() + 'Failed to initialize scripted Animate Atlas character: $charCls');
-          log(' ERROR '.error() + '$e');
-        }
-      }
-    }
-
-    var scriptedCharClassNames5:Array<String> = ScriptedMultiAnimateAtlasCharacter.listScriptClasses();
-    if (scriptedCharClassNames5.length > 0)
-    {
-      log('Instantiating ${scriptedCharClassNames5.length} (Multi-Animate Atlas) scripted characters...');
-      for (charCls in scriptedCharClassNames5)
-      {
-        try
-        {
-          var character:MultiAnimateAtlasCharacter = ScriptedMultiAnimateAtlasCharacter.scriptInit(charCls, DEFAULT_CHAR_ID);
-          log('Loaded character ${character.characterName} (scripted: $charCls)');
-          characterScriptedClass.set(character.characterId, charCls);
-        }
-        catch (e)
-        {
-          log(' ERROR '.error() + 'Failed to initialize scripted Multi-Animate Atlas character: $charCls');
-          log(' ERROR '.error() + '$e');
-        }
-      }
-    }
-
-    // NOTE: Only instantiate the ones not populated above.
-    // ScriptedBaseCharacter.listScriptClasses() will pick up scripts extending the other classes.
-    var scriptedCharClassNames:Array<String> = ScriptedBaseCharacter.listScriptClasses();
-    scriptedCharClassNames = scriptedCharClassNames.filter(function(charCls:String):Bool
-    {
-      return !(scriptedCharClassNames1.contains(charCls)
-        || scriptedCharClassNames2.contains(charCls)
-        || scriptedCharClassNames3.contains(charCls)
-        || scriptedCharClassNames4.contains(charCls)
-        || scriptedCharClassNames5.contains(charCls));
-    });
-
-    if (scriptedCharClassNames.length > 0)
-    {
-      log('Instantiating ${scriptedCharClassNames.length} (Base) scripted characters...');
-      for (charCls in scriptedCharClassNames)
-      {
-        var character:BaseCharacter = ScriptedBaseCharacter.scriptInit(charCls, DEFAULT_CHAR_ID, Custom);
-        if (character == null)
-        {
-          log(' ERROR '.error() + 'Failed to initialize scripted character: $charCls');
-          continue;
-        }
-        else
-        {
-          log('Loaded character ${character.characterName} (scripted: $charCls)');
-          characterScriptedClass.set(character.characterId, charCls);
-        }
-      }
-    }
-
     log(' INFO '.info() + 'Successfully loaded ${characterCache.size()} stages.');
   }
 
@@ -237,47 +93,24 @@ class CharacterDataParser
     }
 
     var charData:Null<CharacterData> = characterCache.get(charId);
-    var charScriptClass:Null<String> = characterScriptedClass.get(charId);
 
     var char:Null<BaseCharacter> = null;
 
-    if (charScriptClass != null)
+    if (charData != null) switch (charData.renderType)
     {
-      if (charData != null) switch (charData.renderType)
-      {
-        case CharacterRenderType.AnimateAtlas:
-          char = ScriptedAnimateAtlasCharacter.scriptInit(charScriptClass, charId);
-        case CharacterRenderType.MultiSparrow:
-          char = ScriptedMultiSparrowCharacter.scriptInit(charScriptClass, charId);
-        case CharacterRenderType.Sparrow:
-          char = ScriptedSparrowCharacter.scriptInit(charScriptClass, charId);
-        case CharacterRenderType.Packer:
-          char = ScriptedPackerCharacter.scriptInit(charScriptClass, charId);
-        case CharacterRenderType.MultiAnimateAtlas:
-          char = ScriptedMultiAnimateAtlasCharacter.scriptInit(charScriptClass, charId);
-        default:
-          // We're going to assume that the script class does the rendering.
-          char = ScriptedBaseCharacter.scriptInit(charScriptClass, charId, CharacterRenderType.Custom);
-      }
-    }
-    else
-    {
-      if (charData != null) switch (charData.renderType)
-      {
-        case CharacterRenderType.AnimateAtlas:
-          char = new AnimateAtlasCharacter(charId);
-        case CharacterRenderType.MultiSparrow:
-          char = new MultiSparrowCharacter(charId);
-        case CharacterRenderType.Sparrow:
-          char = new SparrowCharacter(charId);
-        case CharacterRenderType.Packer:
-          char = new PackerCharacter(charId);
-        case CharacterRenderType.MultiAnimateAtlas:
-          char = new MultiAnimateAtlasCharacter(charId);
-        default:
-          trace(' WARNING '.warning() + ' Creating character with undefined renderType ${charData.renderType}');
-          char = new BaseCharacter(charId, CharacterRenderType.Custom);
-      }
+      case CharacterRenderType.AnimateAtlas:
+        char = new AnimateAtlasCharacter(charId);
+      case CharacterRenderType.MultiSparrow:
+        char = new MultiSparrowCharacter(charId);
+      case CharacterRenderType.Sparrow:
+        char = new SparrowCharacter(charId);
+      case CharacterRenderType.Packer:
+        char = new PackerCharacter(charId);
+      case CharacterRenderType.MultiAnimateAtlas:
+        char = new MultiAnimateAtlasCharacter(charId);
+      default:
+        trace(' WARNING '.warning() + ' Creating character with undefined renderType ${charData.renderType}');
+        char = new BaseCharacter(charId, CharacterRenderType.Custom);
     }
 
     if (char == null)
@@ -389,10 +222,6 @@ class CharacterDataParser
     if (characterCache != null)
     {
       characterCache.clear();
-    }
-    if (characterScriptedClass != null)
-    {
-      characterScriptedClass.clear();
     }
   }
 

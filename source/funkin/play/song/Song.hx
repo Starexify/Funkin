@@ -202,17 +202,8 @@ class Song implements IPlayStateScriptedClass implements IRegistryEntry<SongMeta
     @:privateAccess
     var result:Null<Song> = null;
 
-    if (includeScript && SongRegistry.instance.isScriptedEntry(songId, {variation: variation}))
-    {
-      var songClassName:Null<String> = SongRegistry.instance.getScriptedEntryClassName(songId, {variation: variation});
-      @:privateAccess
-      if (songClassName != null) result = SongRegistry.instance.createScriptedEntry(songClassName);
-    }
-    else
-    {
-      @:privateAccess
-      result = SongRegistry.instance.createEntry(songId);
-    }
+    @:privateAccess
+    result = SongRegistry.instance.createEntry(songId);
 
     if (result == null) throw 'ERROR: Could not build Song instance ($songId), is the attached script bad?';
 

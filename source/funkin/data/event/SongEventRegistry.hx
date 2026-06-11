@@ -4,11 +4,9 @@ import flixel.util.FlxSort;
 import funkin.data.song.SongData.SongEventData;
 import funkin.modding.events.ScriptEvent;
 import funkin.modding.events.ScriptEventDispatcher;
-import funkin.play.event.ScriptedSongEvent;
 import funkin.play.event.SongEvent;
 import funkin.util.SortUtil;
 import funkin.util.macro.ClassMacro;
-
 /**
  * This class statically handles the parsing of internal and scripted song event handlers.
  */
@@ -35,7 +33,6 @@ class SongEventRegistry
     // BASE GAME EVENTS
     //
     registerBaseEvents();
-    registerScriptedEvents();
   }
 
   static function registerBaseEvents()
@@ -44,7 +41,7 @@ class SongEventRegistry
     for (eventCls in BUILTIN_EVENTS)
     {
       var eventClsName:String = Type.getClassName(eventCls);
-      if (eventClsName == 'funkin.play.event.SongEvent' || eventClsName == 'funkin.play.event.ScriptedSongEvent') continue;
+      if (eventClsName == 'funkin.play.event.SongEvent') continue;
 
       var event:SongEvent = Type.createInstance(eventCls, ['UNKNOWN']);
 
@@ -56,28 +53,6 @@ class SongEventRegistry
       else
       {
         trace(' Failed to load built-in song event: ${Type.getClassName(eventCls)}');
-      }
-    }
-  }
-
-  static function registerScriptedEvents()
-  {
-    var scriptedEventClassNames:Array<String> = ScriptedSongEvent.listScriptClasses();
-    trace('Instantiating ${scriptedEventClassNames.length} scripted song events...');
-    if (scriptedEventClassNames == null || scriptedEventClassNames.length == 0) return;
-
-    for (eventCls in scriptedEventClassNames)
-    {
-      var event:SongEvent = ScriptedSongEvent.scriptInit(eventCls, 'UKNOWN');
-
-      if (event != null)
-      {
-        trace(' Loaded scripted song event: ${event.id}');
-        eventCache.set(event.id, event);
-      }
-      else
-      {
-        trace(' Failed to instantiate scripted song event class: ${eventCls}');
       }
     }
   }

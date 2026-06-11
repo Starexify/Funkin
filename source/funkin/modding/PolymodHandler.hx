@@ -14,11 +14,9 @@ import funkin.data.freeplay.style.FreeplayStyleRegistry;
 import funkin.data.stage.StageRegistry;
 import funkin.data.stickers.StickerRegistry;
 import funkin.data.freeplay.album.AlbumRegistry;
-import funkin.modding.module.ModuleHandler;
 import funkin.data.character.CharacterData.CharacterDataParser;
 import funkin.save.Save;
 import funkin.util.FileUtil;
-import funkin.util.macro.ClassMacro;
 import polymod.backends.PolymodAssets.PolymodAssetType;
 import polymod.format.ParseRules.TextFileFormat;
 import polymod.Polymod;
@@ -145,8 +143,6 @@ class PolymodHandler
       trace('Attempting to load ${dirs.length} mods...');
     }
 
-    buildImports();
-
     if (modFileSystem == null) modFileSystem = buildFileSystem();
 
     var loadedModList:Array<ModMetadata> = polymod.Polymod.init({
@@ -159,7 +155,6 @@ class PolymodHandler
       // The current version of our API.
       apiVersionRule: API_VERSION_RULE,
       // Call this function any time an error occurs.
-      errorCallback: PolymodErrorHandler.onPolymodError,
       // Enforce semantic version patterns for each mod.
       // modVersions: null,
       // A map telling Polymod what the asset type is for unfamiliar file extensions.
@@ -178,7 +173,7 @@ class PolymodHandler
       skipDependencyErrors: true,
 
       // Parse hxc files and register the scripted classes in them.
-      useScriptedClasses: true,
+      useScriptedClasses: false,
       loadScriptsAsync: #if html5 true #else false #end,
     });
 
@@ -252,267 +247,6 @@ class PolymodHandler
       modRoot: MOD_FOLDER,
       autoScan: true
     });
-  }
-
-  static function buildImports():Void
-  {
-    // Add default imports for common classes.
-    static final DEFAULT_IMPORTS:Array<Class<Dynamic>> = [
-      funkin.Assets,
-      funkin.Paths,
-      funkin.Preferences,
-      funkin.util.Constants,
-      flixel.FlxG
-    ];
-
-    for (cls in DEFAULT_IMPORTS)
-    {
-      Polymod.addDefaultImport(cls);
-    }
-
-    // `lime.utils.Assets` literally just has a private `resolveClass` function for some reason? so we replace it with our own.
-    Polymod.addImportAlias('lime.utils.Assets', funkin.Assets);
-    Polymod.addImportAlias('openfl.utils.Assets', funkin.Assets);
-
-    // Backward compatibility for certain scripted classes outside `funkin.modding.base`.
-    Polymod.addImportAlias('funkin.modding.base.ScriptedFunkinSprite', funkin.graphics.ScriptedFunkinSprite);
-    Polymod.addImportAlias('funkin.modding.base.ScriptedMusicBeatState', funkin.ui.ScriptedMusicBeatState);
-    Polymod.addImportAlias('funkin.modding.base.ScriptedMusicBeatSubState', funkin.ui.ScriptedMusicBeatSubState);
-
-    // Backward compatibility for some classes that moved.
-    Polymod.addImportAlias('funkin.data.dialogue.conversation.ConversationRegistry', funkin.data.dialogue.ConversationRegistry);
-    Polymod.addImportAlias('funkin.data.dialogue.dialoguebox.DialogueBoxRegistry', funkin.data.dialogue.DialogueBoxRegistry);
-    Polymod.addImportAlias('funkin.data.dialogue.speaker.SpeakerRegistry', funkin.data.dialogue.SpeakerRegistry);
-    Polymod.addImportAlias('funkin.play.character.CharacterDataParser', funkin.data.character.CharacterData.CharacterDataParser);
-    Polymod.addImportAlias('funkin.play.character.CharacterData.CharacterDataParser', funkin.data.character.CharacterData.CharacterDataParser);
-
-    // `FlxAtlasSprite` was merged into `FunkinSprite` and then removed.
-    // We add the import alias here so mods don't error out as much.
-    Polymod.addImportAlias('funkin.graphics.adobeanimate.FlxAtlasSprite', funkin.graphics.FunkinSprite);
-    Polymod.addImportAlias('funkin.modding.base.ScriptedFlxAtlasSprite', funkin.graphics.ScriptedFunkinSprite);
-
-    // `funkin.util.FileUtil` has unrestricted access to the file system.
-    Polymod.addImportAlias('funkin.util.FileUtil', funkin.util.FileUtilSandboxed);
-
-    #if FEATURE_NEWGROUNDS
-    // `funkin.api.newgrounds.Leaderboards` allows for submitting cheated scores.
-    // We still grant read-only access.
-    Polymod.addImportAlias('funkin.api.newgrounds.Leaderboards', funkin.api.newgrounds.Leaderboards.LeaderboardsSandboxed);
-
-    // `funkin.api.newgrounds.Medals` allows for unfair granting of medals.
-    // We still grant read-only access.
-    Polymod.addImportAlias('funkin.api.newgrounds.Medals', funkin.api.newgrounds.Medals.MedalsSandboxed);
-
-    // `funkin.api.newgrounds.NewgroundsClientSandboxed` allows for submitting cheated data.
-    // We still grant read-only access.
-    Polymod.addImportAlias('funkin.api.newgrounds.NewgroundsClient', funkin.api.newgrounds.NewgroundsClient.NewgroundsClientSandboxed);
-    #end
-
-    Polymod.addImportAlias('funkin.api.discord.DiscordClient', funkin.api.discord.DiscordClient.DiscordClientSandboxed);
-
-    // Add blacklisting for prohibited classes and packages.
-
-    // `Sys`
-    // Sys.command() can run malicious processes
-    Polymod.blacklistImport('Sys');
-
-    // `Reflect`
-    // Reflect.callMethod() can access blacklisted packages, but some functions are whitelisted
-    Polymod.addImportAlias('Reflect', funkin.util.ReflectUtil);
-
-    // `Type`
-    // Type.createInstance(Type.resolveClass()) can access blacklisted packages, but some functions are whitelisted
-    Polymod.addImportAlias('Type', funkin.util.ReflectUtil);
-
-    // `cpp.Lib`
-    // Lib.load() can load malicious DLLs
-    Polymod.blacklistImport('cpp.Lib');
-
-    // `haxe.Http`
-    // An alias for `sys.Http`, which is also a blacklisted package.
-    Polymod.blacklistImport('haxe.Http');
-    
-    // `haxe.Unserializer`
-    // Unserializer.DEFAULT_RESOLVER.resolveClass() can access blacklisted packages
-    Polymod.blacklistImport('haxe.Unserializer');
-
-    // `lime.utils.AssetLibrary`
-    // If you create your own library using a manifest, AssetLibrary.__fromManifest() can access blacklisted packages apparently.
-    Polymod.blacklistImport('lime.utils.AssetLibrary');
-
-    // Disable access to AdMob Util
-    Polymod.blacklistImport('funkin.mobile.util.AdMobUtil');
-
-    // Disable access to In-App Purchases Util
-    Polymod.blacklistImport('funkin.mobile.util.InAppPurchasesUtil');
-
-    // Disable access to In-App Reviews Util
-    Polymod.blacklistImport('funkin.mobile.util.InAppReviewUtil');
-
-    // Disable access to AndroidTools Extension
-    for (cls in ClassMacro.listClassesInPackage('extension.androidtools'))
-    {
-      if (cls == null) continue;
-      var className:String = Type.getClassName(cls);
-      Polymod.blacklistImport(className);
-    }
-
-    // Disable access to Haptics Extension
-    for (cls in ClassMacro.listClassesInPackage('extension.haptics'))
-    {
-      if (cls == null) continue;
-      var className:String = Type.getClassName(cls);
-      Polymod.blacklistImport(className);
-    }
-
-    // Disable access to Admob Extension
-    for (cls in ClassMacro.listClassesInPackage('extension.admob'))
-    {
-      if (cls == null) continue;
-      var className:String = Type.getClassName(cls);
-      Polymod.blacklistImport(className);
-    }
-
-    // Disable access to IAPCore Extension
-    for (cls in ClassMacro.listClassesInPackage('extension.iapcore'))
-    {
-      if (cls == null) continue;
-      var className:String = Type.getClassName(cls);
-      Polymod.blacklistImport(className);
-    }
-
-    // Disable access to IARCore Extension
-    for (cls in ClassMacro.listClassesInPackage('extension.iarcore'))
-    {
-      if (cls == null) continue;
-      var className:String = Type.getClassName(cls);
-      Polymod.blacklistImport(className);
-    }
-
-    // Disable access to WebViewCore Extension
-    for (cls in ClassMacro.listClassesInPackage('extension.webviewcore'))
-    {
-      if (cls == null) continue;
-      var className:String = Type.getClassName(cls);
-      Polymod.blacklistImport(className);
-    }
-
-    // `lime.system.CFFI`
-    // Can load and execute compiled binaries.
-    Polymod.blacklistImport('lime.system.CFFI');
-
-    // `lime.system.JNI`
-    // Can load and execute compiled binaries.
-    Polymod.blacklistImport('lime.system.JNI');
-
-    // `lime.system.System`
-    // System.load() can load malicious DLLs
-    Polymod.blacklistImport('lime.system.System');
-
-    // `lime.utils.Assets`
-    // Literally just has a private `resolveClass` function for some reason?
-    Polymod.blacklistImport('lime.utils.Assets');
-    Polymod.blacklistImport('openfl.utils.Assets');
-    Polymod.blacklistImport('openfl.Lib');
-    Polymod.blacklistImport('openfl.system.ApplicationDomain');
-    Polymod.blacklistImport('openfl.net.SharedObject');
-
-    // `openfl.desktop.NativeProcess`
-    // Can load native processes on the host operating system.
-    Polymod.blacklistImport('openfl.desktop.NativeProcess');
-
-    // `flixel.util.FlxSave`
-    // resolveFlixelClasses() can access blacklisted packages
-    Polymod.blacklistStaticFields(flixel.util.FlxSave, ['resolveFlixelClasses']);
-    // Disallow direct manipulation of save data.
-    Polymod.blacklistStaticFields(flixel.FlxG, ['save']);
-
-    // `haxe.Unserializer`
-    // Just to be double-sure, lets blacklist some fields of the Unserializer to make it harder to use if you DO get one.
-    Polymod.blacklistStaticFields(haxe.Unserializer, ['run']);
-    Polymod.blacklistInstanceFields(haxe.Unserializer, ['unserialize']);
-
-    // `funkin.save.Save`
-    // Direct access to save data is important for scripts (like checking unlocks),
-    // but we don't want scripts to be able to perform operations like writing scores.
-    Polymod.blacklistInstanceFields(funkin.save.Save, [
-      // No direct field access
-      'data', // LMFAO definitely not
-      'clearData', // No score manipulation please
-      'setLevelScore',
-      'setSongScore',
-      'applySongRank'
-    ]);
-
-    // `openfl.filesystem.FileStream`, `openfl.net.Socket`, `openfl.utils.ByteArray.ByteArrayData`
-    // Returns `Unseralizer.run` if encoded in HXSF format, though it does have to be seralized correctly for the exploit to work.
-    #if !html5 Polymod.blacklistInstanceFields(openfl.filesystem.FileStream, ['readObject']); #end
-    Polymod.blacklistInstanceFields(openfl.net.Socket, ['readObject']);
-    Polymod.blacklistInstanceFields(openfl.utils.ByteArray.ByteArrayData, ['readObject']);
-
-    // `funkin.api.*`
-    // Contains functions which may allow for cheating and such.
-    for (cls in ClassMacro.listClassesInPackage('funkin.api'))
-    {
-      if (cls == null) continue;
-      var className:String = Type.getClassName(cls);
-      if (polymod.hscript._internal.PolymodScriptClass.importOverrides.exists(className)) continue;
-      Polymod.blacklistImport(className);
-    }
-
-    // `polymod.*`
-    // Contains functions which may allow for un-blacklisting other modules.
-    for (cls in ClassMacro.listClassesInPackage('polymod'))
-    {
-      if (cls == null) continue;
-      var className:String = Type.getClassName(cls);
-      Polymod.blacklistImport(className);
-    }
-
-    // `hscript.*
-    // Contains functions which may allow for interpreting unsanitized strings.
-    for (cls in ClassMacro.listClassesInPackage('hscript'))
-    {
-      if (cls == null) continue;
-      var className:String = Type.getClassName(cls);
-      Polymod.blacklistImport(className);
-    }
-
-    // `io.newgrounds.*`
-    // Contains functions which allow for cheating medals and leaderboards.
-    for (cls in ClassMacro.listClassesInPackage('io.newgrounds'))
-    {
-      if (cls == null) continue;
-      var className:String = Type.getClassName(cls);
-      Polymod.blacklistImport(className);
-    }
-
-    // `sys.*`
-    // Access to system utilities such as the file system.
-    for (cls in ClassMacro.listClassesInPackage('sys'))
-    {
-      if (cls == null) continue;
-      var className:String = Type.getClassName(cls);
-      Polymod.blacklistImport(className);
-    }
-
-    // `funkin.util.macro.*`
-    // CompiledClassList's get function allows access to sys and Newgrounds classes
-    // None of the classes are suitable for mods anyway
-    for (cls in ClassMacro.listClassesInPackage('funkin.util.macro'))
-    {
-      if (cls == null) continue;
-      var className:String = Type.getClassName(cls);
-      Polymod.blacklistImport(className);
-    }
-
-    // External classes for android that bridge to private JNI methods & callbacks
-    Polymod.blacklistImport('funkin.external.android.CallbackUtil');
-    Polymod.blacklistImport('funkin.external.android.DataFolderUtil');
-    Polymod.blacklistImport('funkin.external.android.JNIUtil');
-
-    // Blacklists accessing the interp for polymod hscript
-    Polymod.blacklistInstanceFields(polymod.hscript._internal.PolymodScriptClass.PolymodScriptClass, ['_interp']);
   }
 
   /**
@@ -633,10 +367,6 @@ class PolymodHandler
    */
   public static function forceReloadAssets():Void
   {
-    // Forcibly clear scripts so that scripts can be edited.
-    ModuleHandler.clearModuleCache();
-    Polymod.clearScripts();
-
     // Forcibly reload Polymod so it finds any new files.
     // This will also register all scripts.
     // TODO: Replace this with loadEnabledMods().
@@ -665,7 +395,5 @@ class PolymodHandler
 
     CharacterDataParser.loadCharacterCache(); // TODO: Migrate characters to BaseRegistry.
     NoteKindManager.initialize();
-    ModuleHandler.loadModuleCache();
-    ModuleHandler.callOnCreate();
   }
 }

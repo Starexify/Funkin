@@ -142,12 +142,6 @@ class RegistryMacro
    */
   static function buildRegistryMethods(cls:ClassType, fields:Array<Field>, entryType:ClassType, dataType:Dynamic):Array<Field>
   {
-    var scriptedEntryClsName:String = entryType.pack.join('.') + '.Scripted' + entryType.name;
-
-    var getScriptedClassName:String = '${scriptedEntryClsName}';
-
-    var createScriptedEntry:String = '${scriptedEntryClsName}.scriptInit(clsName, "unknown")';
-
     var newJsonParser:String = 'new json2object.JsonParser<${dataType.module}.${dataType.name}>()';
 
     var dataFilePath:String = getRegistryDataFilePath(cls, fields);
@@ -172,16 +166,6 @@ class RegistryMacro
           {
             return listBaseGameEntryIds().indexOf(id) == -1;
           });
-        }
-
-        function getScriptedClassNames()
-        {
-          return ${Context.parse(getScriptedClassName, Context.currentPos())}.listScriptClasses();
-        }
-
-        function createScriptedEntry(clsName:String)
-        {
-          return ${Context.parse(createScriptedEntry, Context.currentPos())};
         }
 
         public function parseEntryData(id:String)

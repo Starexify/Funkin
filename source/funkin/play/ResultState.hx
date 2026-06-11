@@ -35,7 +35,6 @@ import funkin.ui.FullScreenScaleMode;
 import funkin.ui.MusicBeatSubState;
 import funkin.ui.story.StoryMenuState;
 import funkin.util.HapticUtil;
-import funkin.graphics.ScriptedFunkinSprite;
 import funkin.ui.debug.charting.ChartEditorState;
 #if FEATURE_NEWGROUNDS
 import funkin.api.newgrounds.Medals;
@@ -233,9 +232,8 @@ class ResultState extends MusicBeatSubState
           var xPos = offsets[0] + (FullScreenScaleMode.gameCutoutSize.x / 2);
           var yPos = offsets[1];
 
-          if (animData.scriptClass != null) animation = ScriptedFunkinSprite.scriptInit(animData.scriptClass, xPos, yPos);
-          else
-            animation = FunkinSprite.createTextureAtlas(xPos, yPos, animPath, animLibrary);
+
+          animation = FunkinSprite.createTextureAtlas(xPos, yPos, animPath, animLibrary);
 
           if (animation == null) continue;
 
@@ -297,10 +295,7 @@ class ResultState extends MusicBeatSubState
           @:nullSafety(Off)
           var animation:FunkinSprite = null;
 
-          if (animData.scriptClass != null) animation = ScriptedFunkinSprite.scriptInit(animData.scriptClass,
-            offsets[0] + (FullScreenScaleMode.gameCutoutSize.x / 2), offsets[1]);
-          else
-            animation = FunkinSprite.createSparrow(offsets[0] + (FullScreenScaleMode.gameCutoutSize.x / 2), offsets[1], animPath);
+          animation = FunkinSprite.createSparrow(offsets[0] + (FullScreenScaleMode.gameCutoutSize.x / 2), offsets[1], animPath);
 
           if (animation == null) continue;
 

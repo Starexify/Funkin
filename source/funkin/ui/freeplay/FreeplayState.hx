@@ -301,19 +301,6 @@ class FreeplayState extends MusicBeatSubState
     {
       backingCardPrep = new NewCharacterCard(currentCharacterId);
     }
-    else
-    {
-      var allScriptedCards:Array<String> = ScriptedBackingCard.listScriptClasses();
-      for (cardClass in allScriptedCards)
-      {
-        var card:BackingCard = ScriptedBackingCard.scriptInit(cardClass, 'unknown');
-        if (card.currentCharacter == currentCharacterId)
-        {
-          backingCardPrep = card;
-          break;
-        }
-      }
-    }
     // Return the default backing card if there isn't one specific for the character.
 
     backingCard = backingCardPrep ?? new BackingCard(currentCharacterId);
@@ -884,17 +871,15 @@ class FreeplayState extends MusicBeatSubState
     switch (renderType)
     {
       case 'animateatlas':
-        dj = (scriptClass != '') ? (ScriptedAnimateAtlasFreeplayDJ.scriptInit(scriptClass, x, y,
-          characterId)) : (new AnimateAtlasFreeplayDJ(x, y, characterId));
+        dj = new AnimateAtlasFreeplayDJ(x, y, characterId);
       case 'sparrow':
-        dj = (scriptClass != '') ? (ScriptedSparrowFreeplayDJ.scriptInit(scriptClass, x, y, characterId)) : (new SparrowFreeplayDJ(x, y, characterId));
+        dj = new SparrowFreeplayDJ(x, y, characterId);
       case 'multisparrow':
-        dj = (scriptClass != '') ? (ScriptedMultiSparrowFreeplayDJ.scriptInit(scriptClass, x, y,
-          characterId)) : (new MultiSparrowFreeplayDJ(x, y, characterId));
+        dj = new MultiSparrowFreeplayDJ(x, y, characterId);
       case 'packer':
-        dj = (scriptClass != '') ? (ScriptedPackerFreeplayDJ.scriptInit(scriptClass, x, y, characterId)) : (new PackerFreeplayDJ(x, y, characterId));
+        dj = new PackerFreeplayDJ(x, y, characterId);
       case 'custom':
-        dj = (scriptClass != '') ? (ScriptedBaseFreeplayDJ.scriptInit(scriptClass, x, y, characterId)) : {
+        dj = {
           // force-skip intro only in fallback, since you can specify onIntroDone.dispatch in ScriptedBaseFreeplayDJ, and this is goddamn fallback
           forceSkipIntro = true;
           new BaseFreeplayDJ(x, y, characterId);

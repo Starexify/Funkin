@@ -10,7 +10,6 @@ import funkin.audio.FunkinSound;
 import flixel.util.FlxSort;
 import funkin.modding.PolymodHandler;
 import funkin.modding.events.ScriptEvent;
-import funkin.modding.module.ModuleHandler;
 import funkin.util.SortUtil;
 import funkin.util.WindowUtil;
 import funkin.input.Controls;
@@ -210,7 +209,6 @@ class MusicBeatState extends FlxTransitionableState implements IEventHandler
 
   public function dispatchEvent(event:ScriptEvent)
   {
-    ModuleHandler.callEvent(event);
   }
 
   function reloadAssets()

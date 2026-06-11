@@ -6,7 +6,6 @@ import funkin.modding.events.ScriptEvent;
 import funkin.ui.debug.charting.util.ChartEditorDropdowns;
 import funkin.data.notestyle.NoteStyleRegistry;
 import funkin.play.notes.notestyle.NoteStyle;
-import funkin.play.notes.notekind.ScriptedNoteKind;
 import funkin.play.notes.notekind.NoteKind.NoteKindParam;
 import funkin.util.macro.ClassMacro;
 
@@ -55,7 +54,6 @@ class NoteKindManager
     // BASE GAME EVENTS
     //
     registerBaseNoteKinds();
-    registerScriptedNoteKinds();
   }
 
   /**
@@ -67,8 +65,7 @@ class NoteKindManager
     for (noteKindCls in BUILTIN_KINDS)
     {
       var noteKindClsName:String = Type.getClassName(noteKindCls);
-      if (noteKindClsName == 'funkin.play.notes.notekind.NoteKind'
-        || noteKindClsName == 'funkin.play.notes.notekind.ScriptedNoteKind') continue;
+      if (noteKindClsName == 'funkin.play.notes.notekind.NoteKind') continue;
 
       var kind:NoteKind = Type.createInstance(noteKindCls, ['UNKNOWN']);
 
@@ -80,32 +77,6 @@ class NoteKindManager
       else
       {
         trace(' Failed to load built-in note kind: ${noteKindClsName}');
-      }
-    }
-  }
-
-  /**
-   * Register the scripted note kinds provided by mods.
-   */
-  public static function registerScriptedNoteKinds():Void
-  {
-    var scriptedClassName:Array<String> = ScriptedNoteKind.listScriptClasses();
-    if (scriptedClassName.length > 0)
-    {
-      trace('Instantiating ${scriptedClassName.length} scripted note kind(s)...');
-      for (scriptedClass in scriptedClassName)
-      {
-        try
-        {
-          var script:NoteKind = ScriptedNoteKind.scriptInit(scriptedClass, 'unknown');
-          trace(' Initialized scripted note kind: ${script.noteKind}');
-          noteKinds.set(script.noteKind, script);
-        }
-        catch (e)
-        {
-          trace(' FAILED to instantiate scripted note kind: ${scriptedClass}');
-          trace(e);
-        }
       }
     }
   }

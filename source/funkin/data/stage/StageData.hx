@@ -234,8 +234,6 @@ typedef TextureAtlasData =
    * The filter quality.
    * Available values are: HIGH, MEDIUM, LOW, and RUDY.
    *
-   * If you're making an atlas sprite in HScript, you pass an Int instead:
-   *
    * HIGH - 0
    * MEDIUM - 1
    * LOW - 2

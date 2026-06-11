@@ -7,7 +7,6 @@ import flixel.util.FlxColor;
 import funkin.audio.FunkinSound;
 import funkin.modding.events.ScriptEvent;
 import funkin.modding.IScriptedClass.IEventHandler;
-import funkin.modding.module.ModuleHandler;
 import funkin.modding.PolymodHandler;
 import funkin.util.SortUtil;
 import funkin.util.WindowUtil;
@@ -225,7 +224,7 @@ class MusicBeatSubState extends FlxSubState implements IEventHandler
 
   public function dispatchEvent(event:ScriptEvent)
   {
-    ModuleHandler.callEvent(event);
+
   }
 
   function createWatermarkText():Void
